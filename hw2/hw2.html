@@ -1,0 +1,70 @@
+<html>
+<head>
+<title>Homework2</title>
+</head>
+
+<body>
+	<h1>Introduction</h1>
+		<p>Optimal decision function: f(x1,x2) = x2-(x1-1)^2-1. </p>
+		<p>Data probability distribution: for negative data, 90% chance in f(x1,x2)<0, 10% chance in f(x1,x2) >0; vice versa for positive data.</p>
+		<p>Data range (0,2) for both x1 and x2. </p>
+		<p>There are two parts: one plotting error with different k and the other plotting error with different training sample size. <br>For the first question, data for each group have sz = 100 labels. The training data and label used for producing the figures, are saved in a file called <a href = "./data_label.mat">data_label.mat</a>; load this before proceed with analysis.<br>For the second question, 10 different sample sizes varing from 10 to 100 were used. </p>
+	<h1>Matlab Codes</h1>
+		<ul>
+			<li>Codes for generating data and label: <a href = "data_generation.m">data_generation.m</a></li>
+			<li>Codes for plotting decision boundary for k-nearest neighbour: <a href = "plot_knn_boundary.m">plot_knn_boundary.m</a></li>
+			<li>Codes for calculating error for k-nearest neighbour: <a href = "sorts_error_knn.m">sorts_error_knn.m</a></li>
+			<li>Codes for linear decision boundary plotting and error calculation: <a href = "error_linear.m">error_linear.m</a></li>
+			<li>Codes for plotting error with k value: <a href = "plot_error.m">plot_error.m</a></li>
+			<li>Codes for plotting error with different sample size: <a href = "var_sample_size.m">var_sample_size.m</a></li>
+		</ul>
+	<h1 id = "figure">Figures</h1>
+		<ul>
+			<li><a href = "#linear_model">Linear Model Seperation Graph</a></li>
+			<li><a href = "#knn">K-nearest neighbour Seperation Graph</a></li>
+			<li><a href = "#error_k">Error graph with different k</a></li>
+			<li><a href = "#error_sz">Error graphwith different training sample size</a></li>
+			
+		</ul>
+		<h2 id="linear_model">Linear Model</h2>
+			<p><a href = "#figure">Back to figure index</a></p>
+			<img src = "linear_decision.png"></img>
+		<h2 id = "knn">K-nearest neighbour</h2>
+			<p><a href = "#figure">Back to figure index</a></p>
+			<p>Decision boundary is represented by color; white color indicates non-determinable area, which happens when k is an even number.</p>
+			<ul>
+				<li>K=1: </li><img src = "1.png"></img>
+				<li>K=2: </li><img src = "2.png"></img>
+				<li>K=3: </li><img src = "3.png"></img>
+				<li>K=4: </li><img src = "4.png"></img>
+				<li>K=5: </li><img src = "5.png"></img>
+				<li>K=6: </li><img src = "6.png"></img>
+				<li>K=7: </li><img src = "7.png"></img>
+				<li>K=8: </li><img src = "8.png"></img>
+				<li>K=9: </li><img src = "9.png"></img>
+				<li>K=10: </li><img src = "10.png"></img>
+			</ul>
+		<h2 id = "error_k">Errors with different k</h2>
+			<p><a href = "#figure">Back to figure index</a></p>
+			<p>Diamond shapes represent error from linear models</p>
+			<p>Since we know the underlying distribution, we can determine Bayes error, which is <b>0.1</b></p>
+			<p>Need to point out that when k is even, there are areas whose labels cannot be determined. There is no way to compute loss for these areas. In the following figures, these undeterminable areas are ignored (not takend into calculation).</p>
+			<img src = "error.png"></img>
+		<h2 id = "error_sz">Errors with different training sample size</h2>
+			<p><a href = "#figure">Back to figure index</a></p>
+			<p>Need to point out that when k is even, there are areas whose labels cannot be determined. There is no way to compute loss for these areas. In the following figures, these undeterminable areas are ignored (not takend into calculation).</p>
+			<ul>
+				<li>Linear Model: </li><img src = "linear_error_with_sample_size.png"></img>
+				<li>K=1: </li><img src = "k1.png"></img>
+				<li>K=2: </li><img src = "k2.png"></img>
+				<li>K=3: </li><img src = "k3.png"></img>
+				<li>K=4: </li><img src = "k4.png"></img>
+				<li>K=5: </li><img src = "k5.png"></img>
+				<li>K=6: </li><img src = "k6.png"></img>
+				<li>K=7: </li><img src = "k7.png"></img>
+				<li>K=8: </li><img src = "k8.png"></img>
+				<li>K=9: </li><img src = "k9.png"></img>
+				<li>K=10: </li><img src = "k10.png"></img>
+			</ul>
+</body>
+</html>

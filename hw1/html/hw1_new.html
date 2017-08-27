@@ -1,0 +1,300 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>hw1_new</title><meta name="generator" content="MATLAB 8.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-01-15"><meta name="DC.source" content="hw1_new.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="comment">%generate points and plot</span>
+sz = 100; <span class="comment">%number of points for each group</span>
+xn = [rand(sz,2) * 0.8,ones(sz,1)*-1]; <span class="comment">%-1, red; shift the mean of negative examples</span>
+xp = [rand(sz,2),ones(sz,1)]; <span class="comment">%+1, green</span>
+<span class="comment">%plot(xn(:,1),xn(:,2),'r.',xp(:,1), xp(:,2),'g.')</span>
+
+step = [-1:.01:-0.01, 0.01:.01:1];
+lossmap = zeros(max(size(step))^2, 3); <span class="comment">%result matrix</span>
+r = 1; <span class="comment">%</span>
+
+<span class="comment">%compute 0-1 loss</span>
+<span class="comment">%we don't need to specifically compute b since we don't need b for calculating loss</span>
+<span class="keyword">for</span> w1 = step
+    <span class="keyword">for</span> w2 = step
+        x = [xn;xp]*[w1 0; w2 0; 0 1]; <span class="comment">%calculate w1*x1+w2*x2</span>
+        sorted_x = sortrows(x,1);
+        loss_start = sz; <span class="comment">%choose a small enough b to make every point in group of +1</span>
+        loss_x = zeros(1,2*sz); <span class="comment">%matrix to record loss value at each point</span>
+        <span class="keyword">if</span> sorted_x(1,2) == -1  <span class="comment">%base case (if the decision boundary moves beyond the first point)</span>
+            loss_x(1) = loss_start - 1;
+        <span class="keyword">else</span>
+            loss_x(1) = loss_start + 1;
+        <span class="keyword">end</span>
+        <span class="keyword">for</span> i = 2:2*sz <span class="comment">%go through every point, calculate loss if the decision boundary is moved beyond each point</span>
+            <span class="keyword">if</span> sorted_x(i,2) == -1
+                loss_x(i) = loss_x(i-1) - 1;
+            <span class="keyword">else</span>
+                loss_x(i) = loss_x(i-1) + 1;
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+        lossmap(r,1) = w1;
+        lossmap(r,2) = w2;
+        lossmap(r,3) = min(loss_x);
+        r = r+1;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">%compute hinge loss I</span>
+<span class="comment">%first method is to specify b by w1*x1+w2*x2 each time and calculate loss</span>
+<span class="comment">%dynamically, faster method</span>
+<span class="keyword">for</span> w1 = step
+    <span class="keyword">for</span> w2 = step
+        xn_calc = xn*[w1; w2; 0]; <span class="comment">%calculate w1*x1+w2*x2 for negative group</span>
+        xp_calc = xp*[w1; w2; 0];
+        xn_sort = sort(xn_calc);
+        xp_sort = sort(xp_calc);
+        loss_p = 0; <span class="comment">%positive group loss; starting from f(x) &gt; 1 for all x</span>
+        loss_n = sz * (1 + (1 - xp_sort(1))) + sum(xn_calc); <span class="comment">% 1 - xp_sort(1) is the largest possible b</span>
+        loss_min = loss_n + loss_p;
+        <span class="keyword">for</span> i = 2:sz <span class="comment">%calculate loss when b &gt; -1</span>
+            <span class="comment">%b = 1 - xp_sort(i);</span>
+            loss_p = loss_p + (i-1)*(xp_sort(i) - xp_sort(i-1));
+            loss_n = loss_n - sz * (xp_sort(i) - xp_sort(i-1));
+            loss_tmp = loss_p + loss_n;
+            <span class="keyword">if</span> loss_tmp &lt; loss_min
+                loss_min = loss_tmp;
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+        <span class="comment">%when b &lt; -1, starting from b = -1 - xn_sort(1)</span>
+        loss_p = sz * (1 - (-1 - xn_sort(1))) - sum(xp_calc);
+        loss_n = sz * (1 + (-1 - xn_sort(1))) + sum(xn_calc);
+        <span class="keyword">for</span> i = 2:sz
+            <span class="comment">%b = -1 - xn_sort(i);</span>
+            loss_p = loss_p + sz * (xn_sort(i) - xn_sort(i-1));
+            loss_n = loss_n - (sz - i + 1) * (xn_sort(i) - xn_sort(i-1));
+            loss_tmp = loss_p + loss_n;
+            <span class="keyword">if</span> loss_tmp &lt; loss_min
+                loss_min = loss_tmp;
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+        lossmap(r,1) = w1;
+        lossmap(r,2) = w2;
+        lossmap(r,3) = loss_min;
+        r = r+1;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+
+
+<span class="comment">%compute hinge loss II</span>
+<span class="comment">%second method is to specify b by decreasing .01 each time and calculate loss, slower method but gives the same result</span>
+<span class="keyword">for</span> w1 = step
+    <span class="keyword">for</span> w2 = step
+        xn_calc = xn*[w1; w2; 0]; <span class="comment">%calculate w1*x1+w2*x2 for negative group</span>
+        xp_calc = xp*[w1; w2; 0];
+        b_max = 1-min(xp_calc)+0.01; <span class="comment">% max possible b</span>
+        b_min = -1-max(xn_calc)-0.01; <span class="comment">% min possible b</span>
+        min_loss = 200;
+        <span class="keyword">for</span> b = b_min:.01:b_max
+            loss_tmp = sum(max(0, 1+xn_calc+b))+sum(max(0, 1-xp_calc-b));
+            <span class="keyword">if</span> loss_tmp &lt; min_loss
+                min_loss = loss_tmp;
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+        lossmap(r,1) = w1;
+        lossmap(r,2) = w2;
+        lossmap(r,3) = min_loss;
+        r = r+1;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">%plot using surf or scatter</span>
+x = step;
+y = step;
+[x,y] = meshgrid(x,y);
+z = vec2mat(lossmap(:,3),max(size(step)));
+surf(x,y,z)
+
+<span class="comment">%scatter(lossmap(:,1),lossmap(:,2),[],lossmap(:,3).*0.01, 'filled','s')</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2012b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%generate points and plot
+sz = 100; %number of points for each group
+xn = [rand(sz,2) * 0.8,ones(sz,1)*-1]; %-1, red; shift the mean of negative examples
+xp = [rand(sz,2),ones(sz,1)]; %+1, green
+%plot(xn(:,1),xn(:,2),'r.',xp(:,1), xp(:,2),'g.')
+
+step = [-1:.01:-0.01, 0.01:.01:1];
+lossmap = zeros(max(size(step))^2, 3); %result matrix
+r = 1; %
+
+%compute 0-1 loss
+%we don't need to specifically compute b since we don't need b for calculating loss
+for w1 = step
+    for w2 = step
+        x = [xn;xp]*[w1 0; w2 0; 0 1]; %calculate w1*x1+w2*x2
+        sorted_x = sortrows(x,1);
+        loss_start = sz; %choose a small enough b to make every point in group of +1
+        loss_x = zeros(1,2*sz); %matrix to record loss value at each point
+        if sorted_x(1,2) == -1  %base case (if the decision boundary moves beyond the first point)
+            loss_x(1) = loss_start - 1;
+        else
+            loss_x(1) = loss_start + 1;
+        end
+        for i = 2:2*sz %go through every point, calculate loss if the decision boundary is moved beyond each point
+            if sorted_x(i,2) == -1
+                loss_x(i) = loss_x(i-1) - 1;
+            else
+                loss_x(i) = loss_x(i-1) + 1;
+            end
+        end
+        lossmap(r,1) = w1;
+        lossmap(r,2) = w2;
+        lossmap(r,3) = min(loss_x);
+        r = r+1;
+    end
+end
+
+%compute hinge loss I
+%first method is to specify b by w1*x1+w2*x2 each time and calculate loss
+%dynamically, faster method 
+for w1 = step
+    for w2 = step
+        xn_calc = xn*[w1; w2; 0]; %calculate w1*x1+w2*x2 for negative group
+        xp_calc = xp*[w1; w2; 0];
+        xn_sort = sort(xn_calc);
+        xp_sort = sort(xp_calc);
+        loss_p = 0; %positive group loss; starting from f(x) > 1 for all x
+        loss_n = sz * (1 + (1 - xp_sort(1))) + sum(xn_calc); % 1 - xp_sort(1) is the largest possible b
+        loss_min = loss_n + loss_p;
+        for i = 2:sz %calculate loss when b > -1
+            %b = 1 - xp_sort(i);
+            loss_p = loss_p + (i-1)*(xp_sort(i) - xp_sort(i-1));
+            loss_n = loss_n - sz * (xp_sort(i) - xp_sort(i-1));
+            loss_tmp = loss_p + loss_n;
+            if loss_tmp < loss_min
+                loss_min = loss_tmp;
+            end
+        end
+        %when b < -1, starting from b = -1 - xn_sort(1)
+        loss_p = sz * (1 - (-1 - xn_sort(1))) - sum(xp_calc);
+        loss_n = sz * (1 + (-1 - xn_sort(1))) + sum(xn_calc);
+        for i = 2:sz
+            %b = -1 - xn_sort(i);
+            loss_p = loss_p + sz * (xn_sort(i) - xn_sort(i-1));
+            loss_n = loss_n - (sz - i + 1) * (xn_sort(i) - xn_sort(i-1));
+            loss_tmp = loss_p + loss_n;
+            if loss_tmp < loss_min
+                loss_min = loss_tmp;
+            end
+        end
+        lossmap(r,1) = w1;
+        lossmap(r,2) = w2;
+        lossmap(r,3) = loss_min;
+        r = r+1;
+    end
+end
+
+
+
+%compute hinge loss II
+%second method is to specify b by decreasing .01 each time and calculate loss, slower method but gives the same result
+for w1 = step
+    for w2 = step
+        xn_calc = xn*[w1; w2; 0]; %calculate w1*x1+w2*x2 for negative group
+        xp_calc = xp*[w1; w2; 0];
+        b_max = 1-min(xp_calc)+0.01; % max possible b
+        b_min = -1-max(xn_calc)-0.01; % min possible b
+        min_loss = 200;
+        for b = b_min:.01:b_max
+            loss_tmp = sum(max(0, 1+xn_calc+b))+sum(max(0, 1-xp_calc-b));
+            if loss_tmp < min_loss
+                min_loss = loss_tmp;
+            end
+        end
+        lossmap(r,1) = w1;
+        lossmap(r,2) = w2;
+        lossmap(r,3) = min_loss;
+        r = r+1;
+    end
+end
+
+%plot using surf or scatter
+x = step;
+y = step;
+[x,y] = meshgrid(x,y);
+z = vec2mat(lossmap(:,3),max(size(step)));
+surf(x,y,z)
+
+%scatter(lossmap(:,1),lossmap(:,2),[],lossmap(:,3).*0.01, 'filled','s')
+
+##### SOURCE END #####
+-->
+<h1>0-1 loss scatter plot</h1>
+<img src = "01loss_scatter.jpg" alt = "01loss_scatter">
+<h1>0-1 loss surf plot</h1>
+<img src = "01loss_surf.jpg" alt = "01loss_surf">
+<h1>hinge loss scatter plot</h1>
+<img src = "hingeloss_scatter.jpg" alt = "hingeloss_scatter">
+<h1>hinge loss surf plot</h1>
+<img src = "hingeloss_surf.jpg" alt = "hingeloss_surf">
+
+</body></html>
